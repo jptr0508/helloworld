@@ -4,9 +4,9 @@ public class Unidade {
     private String name;
     private double grade;
     private int semester;
-    private double ects;
+    private int ects;
 
-    public Unidade(String name, double grade, int semester, double ects) {
+    public Unidade(String name, double grade, int semester, int ects) {
       this.name = name;
       this.grade = grade;
       this.semester = semester;
@@ -21,11 +21,15 @@ public class Unidade {
       return grade;
    }
 
+   public void setGrade(double grade){
+      this.grade = grade;
+   }
+
    public int getSemester() {
       return semester;
    }
 
-   public double getEcts() {
+   public int getEcts() {
       return ects;
    }
 

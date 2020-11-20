@@ -19,7 +19,7 @@ import pt.iade.hellloworld.models.Unidade;
 @RequestMapping(path = "/api/java/tester")
 public class JavaTesterController {
   
-    
+    private double grades[] = {15, 11, 13, 14};
     private String ucs[] = {"ING","FP","POO","BD"};
 
 
@@ -38,7 +38,7 @@ public class JavaTesterController {
     @GetMapping(path = "/access/{student}/{covid}",
     produces= MediaType.APPLICATION_JSON_VALUE)
     public boolean getGreeting(@PathVariable("student") boolean isStudent, @PathVariable("covid") boolean hasCovid) {
-        if(isStudent&&hasCovid==false) return true;
+        if(isStudent&&!hasCovid) return true;
         else return false;
     }
     @GetMapping(path = "/required/{student}/{temperature}/{classType}",
@@ -50,88 +50,92 @@ public class JavaTesterController {
 
     @GetMapping(path = "/evacuation/{fire}/{numberOfCovids}/{powerShutdown}/{comeBackTime}/",
     produces= MediaType.APPLICATION_JSON_VALUE)
-    public boolean getRequired(@PathVariable("Covids") double numberOfCovids, @PathVariable("powerShutdown") boolean powerShutdown, @PathVariable("comeBackTime") double comeBackTime) {
-        if(numberOfCovids>5||powerShutdown&&comeBackTime>15)return true; else return false;
+    public boolean getRequired(@PathVariable("fire") boolean fire, @PathVariable("Covids") double numberOfCovids, @PathVariable("powerShutdown") boolean powerShutdown, @PathVariable("comeBackTime") double comeBackTime) {
+        if(fire||numberOfCovids>5||powerShutdown&&comeBackTime>15)return true;
+        else return false;
     }
 
     @GetMapping(path = "/average",
     produces= MediaType.APPLICATION_JSON_VALUE)
-    public double averageR(double grades[], double average, int i) {
+    public double average(double average, int i) {
     
-        for(i=0;i<3;i++){
-                
-            average=grades[i]+average;
+        for(i=0;i<grades.length;i++){
+            
+            average += grades[i];
         }
-        average=average/3;
+
+        average /= 4;
         return average;
     }
     @GetMapping(path = "/maximumG",
     produces= MediaType.APPLICATION_JSON_VALUE)
-    public double maximumG(double grades[], double maximum, int i) {
-       
-      
-      
-        while(i<3){
-            
-        if(maximum<grades[i]){   
-        maximum=grades[i];
-        i++;
+    public double maximumG(double maximum, int i) {
+        
+        while(i<4){
+
+            if(maximum<grades[i]){  
+
+                maximum=grades[i];
+                i++;
+            }
+
+            else i++;
         }
-     else i++;
-    }
+
         return maximum;
     }
     @GetMapping(path = "/ucGrade",
     produces= MediaType.APPLICATION_JSON_VALUE)
-    public double returnG(double grades[], String ucs[], int i) {
-            String uc = "FP";
-            double ucGrade = 0;
-            for (i = 0; i < ucs.length; i++) {
-                if (ucs[i].equals(uc)) {
-                    ucGrade = grades[i];
-                }
+    public double returnG(String ucs[], int i) {
+        String uc = "FP";
+        double ucGrade = 0;
+
+        for (i = 0; i < ucs.length; i++) {
+            if (ucs[i].equals(uc)) {
+                ucGrade = grades[i];
             }
-            return ucGrade;
-        
+        }
+        return ucGrade;
     }
     @GetMapping(path = "/howManyUC",
     produces= MediaType.APPLICATION_JSON_VALUE)
-    public double howManyUC(double grades[], double average, int i) {
-        double min=grades[0];
-        double max=grades[3];
+    public double howManyUC(int i) {
+        double min = grades[0];
+        double max = grades[4];
         double uclimits = 0;
-            for ( i = 0; i < ucs.length; i++) {
+
+        for ( i = 0; i < ucs.length; i++) {
             if (grades[i] >= min && (grades[i] <= max)) {
-            uclimits++;
+                uclimits++;
             }
         }
-            return uclimits;
+
+        return uclimits;
     }
     @GetMapping(path = "/returnString",
     produces= MediaType.APPLICATION_JSON_VALUE)
-    public String returnString(double grades[], double average, int i) {
-    
+    public String returnString(int i) {
+        String string = "";
         
-            String string="";                  
-                for( i=0; i<grades.length; i++) {
-                string+=ucs[i]+":"+grades[i]+" ";
-                }
+        for( i=0; i<grades.length; i++) {
+            string += ucs[i] + ":" + grades[i] + " ";
+        }
+
         return string;
     }
 
     private ArrayList<Unidade> units = new ArrayList<Unidade>();
 
-    @PostMapping(path = "/units",produces= MediaType.APPLICATION_JSON_VALUE) 
+    @PostMapping(path = "/units/") 
     public Unidade saveUnit(@RequestBody Unidade unit) {
-    logger.info("Added unit "+unit.getName());
-    units.add(unit);
-    return unit;
+        logger.info("Added unit "+unit.getName());
+        units.add(unit);
+        return unit;
     }
-    @GetMapping(path = "/units",
-    produces= MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/units", produces= MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Unidade> getUnits() {
-    logger.info("Get "+units.size()+" Units");
-    return units;
+        logger.info("Get "+units.size()+" Units");
+        return units;
     } 
 
    
